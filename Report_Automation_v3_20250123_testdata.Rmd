@@ -85,7 +85,7 @@ for(i in 1:length(test_nest$Sex)) {
   # get data from current in tibble format
   current2 <- as.data.frame(current$data)
   
-  # nest current2 data by regional activity for use in next loop
+  # nest current2 data by Hair for use in next loop
   current3 <- current2 %>% 
     group_by(Hair) %>% 
     nest()
@@ -102,7 +102,7 @@ for(i in 1:length(test_nest$Sex)) {
   
   # ft
   
-  # use knit_child() to generate human activity group section ----
+  # use knit_child() to generate Sex of participants section ----
   child1 <- knitr::knit_child('ra-report-child-01.Rmd', quiet = TRUE)
   
   cat(child1, sep = '\n')
@@ -116,7 +116,7 @@ for(i in 1:length(test_nest$Sex)) {
     # get row numbers of current3
     rownums <- 1:length(current3$Hair)
     
-    # use child2 to generate human activity section ----
+    # use child2 to generate Hair section ----
     child2 <- knitr::knit_child('ra-report-child-02.Rmd', quiet = TRUE)
     
     cat(child2, sep = '\n')
@@ -127,7 +127,7 @@ for(i in 1:length(test_nest$Sex)) {
     # get data from current3 in tibble format
     current4 <- as.data.frame(current3$data[j])
     
-    # nest current4 data by regional activity for use in next loop
+    # nest current4 data by Eye colour for use in next loop
     current5 <- current4 %>% 
       group_by(Eye) %>% 
       nest()
@@ -140,7 +140,7 @@ for(i in 1:length(test_nest$Sex)) {
       
       rownums2 <- 1:length(current5$Eye)
       
-      # use child 3 to generate pressure section ----
+      # use child 3 to generate eye colour section ----
       
       child3 <- knitr::knit_child('ra-report-child-03.Rmd', quiet = TRUE,options = c(j,k))
        
@@ -148,7 +148,7 @@ for(i in 1:length(test_nest$Sex)) {
       
       current6 <- current5$data[k]
       
-      # use child5 to print risk assessment table ----
+      # use child5 to print eye colour table ----
       child5 <- knitr::knit_child('ra-report-child-04.Rmd', quiet = TRUE)
     }
   }
