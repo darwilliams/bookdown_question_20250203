@@ -148,8 +148,10 @@ for(i in 1:length(test_nest$Sex)) {
       
       current6 <- current5$data[k]
       
-      # use child5 to print eye colour table ----
-      child5 <- knitr::knit_child('ra-report-child-04.Rmd', quiet = TRUE)
+      # use child4 to print eye colour table ----
+      child4 <- knitr::knit_child('ra-report-child-04.Rmd', quiet = TRUE)
+      
+      cat(child4, sep = '/n')
     }
   }
 }
