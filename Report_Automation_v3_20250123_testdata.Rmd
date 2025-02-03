@@ -1,0 +1,163 @@
+---
+title: "Figure and Table Numbering Figuring"
+author: "darwilliams"
+date: "`r Sys.Date()`"
+site: bookdown::bookdown_site
+output:
+  bookdown::word_document2:
+    toc: true
+    number_sections: yes
+    fig_caption: yes
+editor_options:
+  chunk_output_type: console
+---
+
+```{r package_calls, include=FALSE}
+
+library(xlsx) #for reading excel files
+library(readxl) #for reading excel files
+library(knitr) #for rmarkdown knit functions
+library(bookdown) # this might be needed for section referencing
+library(officedown) # this adds functionality for word docs
+library(officer) #more word formatting stuffs
+library(tidyverse) #all the data tidying stuff
+library(here) #cool new package for simplified file reading
+library(janitor) #cool new find
+library(gtsummary) #may be useful, maybe not
+library(skimr) #not sure if needed
+library(flextable) #this package is v/ useful for creating tables
+library(curl)
+
+options(knitr.duplicate.label = "allow") #this is important to include so that child docs can be used in a loop
+
+```
+
+```{r read_in_data_and_parameters, include=FALSE}
+
+# Get image to use in loop ----
+url <- "https://www.r-project.org/logo/Rlogo.png"
+destfile <- file.path(getwd(),"R.png")
+
+curl_download(url, destfile)
+
+img <- "R.png"
+
+test_data <- as.data.frame(HairEyeColor)
+
+
+```
+
+
+\newpage
+
+# Introduction
+
+This document is for review and feedback by staff.
+
+
+```{r Automate_report_sections_from_data, echo = FALSE, results = "asis"}
+
+# initial veraions of this is code were taken from stackoverflow:
+# https://stackoverflow.com/questions/36674824/use-loop-to-generate-section-of-text-in-rmarkdown
+
+# now the loops are using child docs which more info can be found on here: https://bookdown.org/yihui/rmarkdown-cookbook/child-document.html
+
+
+# and let's try a nest as well
+test_nest <- test_data %>% 
+  group_by(Sex) %>% 
+  nest()
+
+
+
+for(i in 1:length(test_nest$Sex)) {
+  
+  # This loop sets up the First Group: Sex of participants
+  
+  # print(paste0("i = ",i))
+  
+  current <- test_nest[i, ]
+  
+  # print(current$data)
+  
+  # set-up data for next loop ----
+  
+  # get data from current in tibble format
+  current2 <- as.data.frame(current$data)
+  
+  # nest current2 data by regional activity for use in next loop
+  current3 <- current2 %>% 
+    group_by(Hair) %>% 
+    nest()
+  
+  # set up table ----
+  
+  ft <- current2 %>% 
+    flextable()
+    
+  ft <- set_table_properties(ft, width = .5, layout = "autofit")
+  
+  ft <- set_caption(ft, paste0("Frequencies of hair and eye colour for ",current$Sex," study participants"),
+                    autonum = run_autonum(seq_id = "tab", pre_label = "Table", bkm = i))
+  
+  # ft
+  
+  # use knit_child() to generate human activity group section ----
+  child1 <- knitr::knit_child('ra-report-child-01.Rmd', quiet = TRUE)
+  
+  cat(child1, sep = '\n')
+  
+  for (j in 1:length(current3$data)){
+    
+    # This loop sets up the next sub-header section: Hair
+    
+    # print(paste0("j = ",j))
+    
+    # get row numbers of current3
+    rownums <- 1:length(current3$Hair)
+    
+    # use child2 to generate human activity section ----
+    child2 <- knitr::knit_child('ra-report-child-02.Rmd', quiet = TRUE)
+    
+    cat(child2, sep = '\n')
+
+    
+    # set-up data for next loop ----
+    
+    # get data from current3 in tibble format
+    current4 <- as.data.frame(current3$data[j])
+    
+    # nest current4 data by regional activity for use in next loop
+    current5 <- current4 %>% 
+      group_by(Eye) %>% 
+      nest()
+    
+    for(k in 1:length(current5$Eye)){
+      
+      # This loop sets up Eye Colour
+      
+      # print(paste0("k = ", k))
+      
+      rownums2 <- 1:length(current5$Eye)
+      
+      # use child 3 to generate pressure section ----
+      
+      child3 <- knitr::knit_child('ra-report-child-03.Rmd', quiet = TRUE,options = c(j,k))
+       
+      cat(child3, sep = '\n')
+      
+      current6 <- current5$data[k]
+      
+      # use child5 to print risk assessment table ----
+      child5 <- knitr::knit_child('ra-report-child-04.Rmd', quiet = TRUE)
+    }
+  }
+}
+
+
+
+
+```
+
+\newpage
+

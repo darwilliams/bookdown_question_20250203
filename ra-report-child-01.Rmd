@@ -1,0 +1,25 @@
+---
+title: "ra-report-child1"
+author: "Dave Williams"
+date: "2025-01-23"
+---
+
+```{r child1-intro, echo=FALSE}
+
+# this child rmd depends on and is used by RA_Report_Automation_V2_20250123.Rmd or later
+
+```
+
+\newpage
+
+# Sex: `r current$Sex`
+
+Study participants were randomly selected from a population of students at Fake University
+
+```{r child1-table-print, echo=FALSE, results='asis'}
+
+flextable::flextable_to_rmd(ft)
+
+```
+
+\newpage

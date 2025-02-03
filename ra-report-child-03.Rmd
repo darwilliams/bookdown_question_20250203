@@ -1,0 +1,26 @@
+---
+title: "ra-report-child3"
+author: "Dave Williams"
+date: "2025-01-23"
+---
+
+```{r child3-create-fig-caption, echo=FALSE}
+
+# this child rmd depends on and is used by RA_Report_Automation_V2_20250123.Rmd or later
+
+figcaption2 <- paste0("Figure showing the eye colour: ", current5$Eye[k], " of the hair colour ", current3$Hair[j]," for the study participants")
+
+```
+
+### Eye Colour `r rownums2[k]`: `r current5$Eye[k]`
+
+Brief methods/data description.
+      
+
+```{r child3-figure-print,echo=FALSE, fig.cap= figcaption2, results='asis'}
+
+knitr::include_graphics(img,dpi = 150)
+
+```
+
+
